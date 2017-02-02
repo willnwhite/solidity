@@ -77,15 +77,26 @@ should be backwards compatible if possible.
       },
       settings:
       {
-        remappings: [":g/dir"], // just as it used to be
-        // (axic) what is remapping doing exactly?
-        optimizer: {enabled: true, runs: 500},
-        // if given, only compiles this contract, can also be an array. If only a contract name is given, tries to find it if unique.
-        compilationTarget: "myFile.sol:MyContract",
-        // addresses of the libraries. If not all libraries are given here, it can result in unlinked objects whose output data is different
-        libraries: {
-          "def:MyLib": "0x123123..."
+        // Sorted list of remappings
+        remappings: [ ":g/dir" ],
+        // Optimizer settings (enabled defaults to false)
+        optimizer: {
+          enabled: true,
+          runs: 500
         },
+        // If given, only compiles the specified contracts.
+        compilationTarget: {
+          "myFile.sol": "MyContract"
+        },
+        // Addresses of the libraries. If not all libraries are given here, it can result in unlinked objects whose output data is different.
+        libraries: {
+          // The top level key is the the name of the source file where the library is defined.
+          // If remappings are used, this source file should match the global path after remappings were applied.
+          // If this key is an empty string, that refers to a global level.
+          "def": {
+            "MyLib": "0x123123..."
+          }
+        }
         // The following can be used to restrict the fields the compiler will output.
         // (axic)
         outputSelection: [
@@ -139,6 +150,7 @@ Regular Output
               message: "Invalid keyword" // mandatory
           }
       ]
+      // This contains all the compiled outputs. It can be limited/filtered by the compilationTarget setting.
       contracts: {
         "sourceFile.sol:ContractName": {
           // The Ethereum Contract ABI. If empty, it is represented as an empty array.
